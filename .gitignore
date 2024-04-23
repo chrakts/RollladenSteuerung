@@ -30,3 +30,11 @@
 *.exe
 *.out
 *.app
+
+bin/Release/
+
+-ffunction-sections
+
+*.depend
+
+*.layout
