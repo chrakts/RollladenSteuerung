@@ -7,22 +7,56 @@
 //10:  99.0 ms
 //101: 1000 ms
 
-volatile TIMER MyTimers[MYTIMER_NUM]= {	{TM_START,RESTART_YES,actReportBetweenSensors,0,nextReportStatus},
-                                        {TM_START,RESTART_YES,5000,0,led1Blinken}
+volatile TIMER2 MyTimers[MYTIMER_NUM]=
+{
+  {TM_STOP,RESTART_NO,100,0,rollTimer,0},
+#if NUM_ROLLLADEN>1
+  {TM_STOP,RESTART_NO,100,0,rollTimer,1},
+#endif // NUM_ROLLLADEN
+#if NUM_ROLLLADEN>2
+  {TM_STOP,RESTART_NO,100,0,rollTimer,2},
+#endif // NUM_ROLLLADEN
+#if NUM_ROLLLADEN>3
+  {TM_STOP,RESTART_NO,100,0,rollTimer,3},
+#endif // NUM_ROLLLADEN
+#if NUM_ROLLLADEN>4
+  {TM_STOP,RESTART_NO,100,0,rollTimer,4},
+#endif // NUM_ROLLLADEN
+#if NUM_ROLLLADEN>5
+  {TM_STOP,RESTART_NO,100,0,rollTimer,5},
+#endif // NUM_ROLLLADEN
+  {TM_START,RESTART_YES,actReportBetweenSensors,0,nextReportStatus,0},
+  {TM_START,RESTART_YES,100,0,led1Blinken,0}
 };
 
-void led1Blinken(uint8_t test)
+void rollTimer(uint16_t parameter)
 {
-	LEDROT_TOGGLE;
+  LEDROT_OFF;
+  LEDGRUEN_OFF;
+  actPosition[parameter] = setPosition[parameter];
+  moveStatus[parameter]  = 0;
 }
 
-void nextReportStatus(uint8_t test)
+void led1Blinken(uint16_t parameter)
 {
-  LEDGRUEN_ON;
+	//LEDROT_TOGGLE;
+}
+
+void nextReportStatus(uint16_t parameter)
+{
+  //LEDGRUEN_ON;
 	sendStatusReport = true;
-	statusReport+=1;
+  if(indexReport >= NUM_ROLLLADEN)
+  {
+    indexReport = 0;
+    statusReport++;
+  }
+
 	if( statusReport > LASTREPORT )
-        statusReport = FIRSTREPORT;
+  {
+    statusReport = FIRSTREPORT;
+    indexReport = 0;
+  }
 }
 
 

@@ -9,18 +9,20 @@
 #ifndef MYTIMERS_H_
 #define MYTIMERS_H_
 
-#include "timer.h"
+#include "timer2.h"
 #include "External.h"
 #include "myconstants.h"
 
-#define MYTIMER_NUM	2
+#define MYTIMER_NUM	2+NUM_ROLLLADEN
 
 
-enum{TIMER_SENSOREN,TIMER_REPORT,TIMER_SAVE_DELAY};
+enum{TIMER_REPORT=NUM_ROLLLADEN,TIMER_LED};
 
-void nextReportStatus(uint8_t test);
-void led1Blinken(uint8_t test);
 
-extern volatile TIMER MyTimers[MYTIMER_NUM];
+void rollTimer(uint16_t parameter);
+void nextReportStatus(uint16_t parameter);
+void led1Blinken(uint16_t parameter);
+
+extern volatile TIMER2 MyTimers[MYTIMER_NUM];
 
 #endif /* MYTIMERS_H_ */

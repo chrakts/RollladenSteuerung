@@ -17,7 +17,7 @@
 #include "myconstants.h"
 #include "Serial.h"
 #include "External.h"
-#include "timer.h"
+#include "timer2.h"
 #include "cmultiStandardCommands.h"
 #include "ComReceiver.h"
 #include "CommandFunctions.h"
@@ -27,5 +27,6 @@
 #include "xxHardware.h"
 #include "ledHardware.h"
 
+void stopRollladen(uint8_t rollo);
 
 #endif /* LUEFTERSTEUERUNG_H_ */
