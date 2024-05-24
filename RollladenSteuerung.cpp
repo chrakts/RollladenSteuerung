@@ -67,6 +67,8 @@ int main(void)
 	setup();
 	cnet.broadcastUInt8((uint8_t) RST.STATUS,'S','0','R');
 	init_mytimer();
+  for(uint8_t i=0;i<NUM_ROLLLADEN;i++)
+    moveStatus[i] = 0;
 
 	while (1)
 	{
@@ -77,7 +79,7 @@ int main(void)
     {
       if(actPosition[i] != setPosition[i])
       {
-        if(moveStatus[i] != 0)   // falls bereits in Bewegung - nichts veranlassen
+        if(moveStatus[i] == 0)   // falls bereits in Bewegung - nichts veranlassen
         {
           if(actPosition[i] < 0.0)  // unbekannte Ausgangsposition
           {
@@ -114,7 +116,21 @@ int main(void)
         }
       }
     }
+    switch(moveStatus[0])
+    {
+      case 1:
+        LEDGRUEN_ON;
+        LEDROT_OFF;
+      break;
+      case -1:
+        LEDGRUEN_OFF;
+        LEDROT_ON;
+      break;
+      default:
+        LEDGRUEN_OFF;
+        LEDROT_OFF;
 
+    }
 		if( sendStatusReport )
     {
         sendStatusReport = false;
@@ -130,7 +146,7 @@ int main(void)
             indexReport++;
           break;
           case SET_POSITION:
-            cnet.broadcastFloat(setPosition[indexReport],'S','0'+indexReport,'a');
+            cnet.broadcastFloat(setPosition[indexReport],'X','0'+indexReport,'a');
             indexReport++;
           break;
           case FIXPOS_A:
