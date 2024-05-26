@@ -16,8 +16,8 @@
 struct rolladenStatus
 {
   uint8_t fixPos[3];      // Programmierbare Positionen in % als Ganzzahlwert
-  uint16_t upTime;        // Zeit in 1/10s zum Hochfahren
-  uint16_t downTime;      // Zeit in 1/10s zum runterfahren
+  uint16_t upTime;        // Zeit in 1/100s zum Hochfahren
+  uint16_t downTime;      // Zeit in 1/100s zum runterfahren
 };
 
 typedef struct rolladenStatus ROLL_STATUS;
