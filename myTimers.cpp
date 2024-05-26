@@ -26,7 +26,7 @@ volatile TIMER2 MyTimers[MYTIMER_NUM]=
   {TM_STOP,RESTART_NO,100,0,rollTimer,5},
 #endif // NUM_ROLLLADEN
   {TM_START,RESTART_YES,actReportBetweenSensors,0,nextReportStatus,0},
-  {TM_START,RESTART_YES,100,0,led1Blinken,0}
+  {TM_START,RESTART_YES,30,0,led1Blinken,0}
 };
 
 void rollTimer(uint16_t parameter)
@@ -39,7 +39,13 @@ void rollTimer(uint16_t parameter)
 
 void led1Blinken(uint16_t parameter)
 {
-	//LEDROT_TOGGLE;
+	for(uint8_t i=0;i<NUM_ROLLLADEN;i++)
+  {
+    if(moveStatus[i] != 0)
+    {
+      actPosition[i] = startPosition[i] + (100.0*(float)(MyTimers[i].value - MyTimers[i].actual)/(float)actualStatus[i].upTime)*float(moveStatus[i]);
+    }
+  }
 }
 
 void nextReportStatus(uint16_t parameter)
