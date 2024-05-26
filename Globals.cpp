@@ -14,6 +14,7 @@ const char *Node = NODE_STRING;
   #pragma message "Rollläden sind vorgesehen"
   float actPosition[NUM_ROLLLADEN];      // aktuelle Position in % als float-Wert
   float setPosition[NUM_ROLLLADEN];      // Zielposition in % als float-Wert
+  float startPosition[NUM_ROLLLADEN];    // wenn ein Rollladen startet,dann wird hier die Ausgangsposition gespeichert
   float oldPosition[NUM_ROLLLADEN];
   int8_t moveStatus[NUM_ROLLLADEN];
   ROLL_STATUS actualStatus[NUM_ROLLLADEN];

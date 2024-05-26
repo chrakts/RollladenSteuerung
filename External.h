@@ -31,6 +31,7 @@
   #pragma message "Rollläden sind vorgesehen"
   extern float actPosition[NUM_ROLLLADEN];
   extern float setPosition[NUM_ROLLLADEN];
+  extern float startPosition[NUM_ROLLLADEN];
   extern float oldPosition[NUM_ROLLLADEN];
   extern int8_t moveStatus[NUM_ROLLLADEN];
   extern ROLL_STATUS actualStatus[NUM_ROLLLADEN];
