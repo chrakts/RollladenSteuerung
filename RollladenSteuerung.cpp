@@ -54,7 +54,8 @@ void setup()
   {
     moveStatus[i] = 0;          // Stillstand
     actPosition[i] = -100.0;   // unbekannte Position
-    setPosition[i] = -100.0;
+    setPosition[i] = -1;
+    oldPosition[i] = -100.0;
   }
 
   PMIC_CTRL = PMIC_LOLVLEX_bm | PMIC_HILVLEN_bm | PMIC_MEDLVLEN_bm;
@@ -67,9 +68,6 @@ int main(void)
 	setup();
 	cnet.broadcastUInt8((uint8_t) RST.STATUS,'S','0','R');
 	init_mytimer();
-  for(uint8_t i=0;i<NUM_ROLLLADEN;i++)
-    moveStatus[i] = 0;
-
 	while (1)
 	{
 		cnetRec.comStateMachine();
@@ -85,32 +83,32 @@ int main(void)
           {
             if(setPosition[i] > 50.0)    // Zielposition ist in der oberen Hälfte -> ganz nach oben fahren
             {
-              MyTimers[i].value = actualStatus[i].upTime*1.2;
-              moveStatus[i] = 1;
-            }
+              setPosition[i] = 100;
+              actPosition[i] = 0;
+           }
             else                   // Zielposition ist in der unteren Hälfte -> ganz nach unten fahren
             {
-              MyTimers[i].value = actualStatus[i].downTime*1.2;
-              moveStatus[i] = -1;
+              setPosition[i] = 0;
+              actPosition[i] = 100;
             }
           }
-          else                   // bekannte Ausgangsposition
+
+          float diff = abs(setPosition[i]-actPosition[i])/100.0;
+          if(diff > 0.99)
+            diff = 1.1;
+          startPosition[i] = actPosition[i];            // Startposition merken
+          if(setPosition[i]>actPosition[i])
           {
-            float diff = abs(setPosition[i]-actPosition[i]);
-            if(setPosition>actPosition)
-            {
-              //up
-              MyTimers[i].value = diff*actualStatus[i].upTime;
-              moveStatus[i] = 1;
+            //up
+            MyTimers[i].value = (uint16_t)(diff*(float)actualStatus[i].upTime);
+            moveStatus[i] = 1;
 
-            }
-            else
-            {
-              //down
-              MyTimers[i].value = diff*actualStatus[i].downTime;
-              moveStatus[i] = -1;
-            }
-
+          }
+          else
+          {
+            //down
+            MyTimers[i].value = (uint16_t)(diff*(float)actualStatus[i].downTime);
+            moveStatus[i] = -1;
           }
           MyTimers[i].state = TM_START;
         }
@@ -118,19 +116,28 @@ int main(void)
     }
     switch(moveStatus[0])
     {
-      case 1:
+      case -1:
         LEDGRUEN_ON;
         LEDROT_OFF;
       break;
-      case -1:
+      case 1:
         LEDGRUEN_OFF;
         LEDROT_ON;
       break;
       default:
         LEDGRUEN_OFF;
         LEDROT_OFF;
-
     }
+
+    for(uint8_t i=0;i<NUM_ROLLLADEN;i++)
+    {
+      if(actPosition[i] != oldPosition[i])
+      {
+        cnet.broadcastFloat(actPosition[i],'P','0'+i,'a');
+        oldPosition[i] = actPosition[i];
+      }
+    }
+
 		if( sendStatusReport )
     {
         sendStatusReport = false;
@@ -188,18 +195,14 @@ void stopRollladen(uint8_t rollo)
     MyTimers[rollo].state = TM_STOP;
     if(actPosition[rollo]>=0.0)           // nur wenn die Augangsposition bekannt war, wird die neue berechnet
     {
-      if(moveStatus[rollo]==1)
-      {
-        actPosition[rollo] += (MyTimers[rollo].value - MyTimers[rollo].actual)/actualStatus[rollo].upTime;
-        if(actPosition[rollo] > 100.0)
-          actPosition[rollo] = 100.0;
-      }
-      else
-      {
-        actPosition[rollo] -= (MyTimers[rollo].value - MyTimers[rollo].actual)/actualStatus[rollo].downTime;
-        if(actPosition[rollo] < 0.0)
-          actPosition[rollo] = 0.0;
-      }
+      actPosition[rollo] = startPosition[rollo] + (100.0*(float)(MyTimers[rollo].value - MyTimers[rollo].actual)/(float)actualStatus[rollo].upTime) * moveStatus[rollo];
+      if(actPosition[rollo] > 100.0)
+        actPosition[rollo] = 100.0;
+      if(actPosition[rollo] < 0.0)
+        actPosition[rollo] = 0.0;
+      setPosition[rollo] = actPosition[rollo];
+      moveStatus[rollo] = 0;
     }
+    cnet.broadcastFloat(actPosition[rollo],'P','0'+rollo,'a');
   }
 }
