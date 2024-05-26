@@ -54,9 +54,10 @@ void setup()
   {
     moveStatus[i] = 0;          // Stillstand
     actPosition[i] = -100.0;   // unbekannte Position
-    setPosition[i] = -1;
+    setPosition[i] = -100;
     oldPosition[i] = -100.0;
   }
+  readEEData();
 
   PMIC_CTRL = PMIC_LOLVLEX_bm | PMIC_HILVLEN_bm | PMIC_MEDLVLEN_bm;
 	sei();
@@ -114,6 +115,7 @@ int main(void)
         }
       }
     }
+    /*
     switch(moveStatus[0])
     {
       case -1:
@@ -128,7 +130,7 @@ int main(void)
         LEDGRUEN_OFF;
         LEDROT_OFF;
     }
-
+    */
     for(uint8_t i=0;i<NUM_ROLLLADEN;i++)
     {
       if(actPosition[i] != oldPosition[i])
@@ -183,8 +185,10 @@ int main(void)
               MyTimers[TIMER_REPORT].state = TM_START;
           break;
       }
-      //LEDGRUEN_OFF;
     }
+    compareStatus();
+    if(eepromWriteReady)
+      writeEEData();
 	}
 }
 
@@ -204,5 +208,65 @@ void stopRollladen(uint8_t rollo)
       moveStatus[rollo] = 0;
     }
     cnet.broadcastFloat(actPosition[rollo],'P','0'+rollo,'a');
+    cnet.broadcastFloat(actPosition[rollo],'X','0'+rollo,'a');
+  }
+}
+
+void readEEData()
+{
+  for(uint8_t i=0;i<NUM_ROLLLADEN;i++)
+  {
+    actualStatus[i].downTime = eeprom_read_word(&(saveStatus[i].downTime));
+    actualStatus[i].upTime = eeprom_read_word(&(saveStatus[i].upTime));
+    actualStatus[i].fixPos[0] = eeprom_read_byte(&(saveStatus[i].fixPos[0]));
+    actualStatus[i].fixPos[1] = eeprom_read_byte(&(saveStatus[i].fixPos[1]));
+    actualStatus[i].fixPos[2] = eeprom_read_byte(&(saveStatus[i].fixPos[2]));
+  }
+  setOldStatus();
+}
+
+void writeEEData()
+{
+  for(uint8_t i=0;i<NUM_ROLLLADEN;i++)
+  {
+    eeprom_update_word(&saveStatus[i].downTime,actualStatus[i].downTime);
+    eeprom_update_word(&saveStatus[i].upTime,actualStatus[i].upTime);
+    eeprom_update_byte(&saveStatus[i].fixPos[0],actualStatus[i].fixPos[0]);
+    eeprom_update_byte(&saveStatus[i].fixPos[1],actualStatus[i].fixPos[1]);
+    eeprom_update_byte(&saveStatus[i].fixPos[2],actualStatus[i].fixPos[2]);
+  }
+  eepromWriteReady = false;
+  LEDROT_OFF;
+}
+
+void compareStatus()
+{
+  bool result = true;
+  for(uint8_t i=0;i<NUM_ROLLLADEN;i++)
+  {
+    result = result && (actualStatus[i].upTime == oldStatus[i].upTime);
+    result = result && (actualStatus[i].downTime == oldStatus[i].downTime);
+    result = result && (actualStatus[i].fixPos[0] == oldStatus[i].fixPos[0]);
+    result = result && (actualStatus[i].fixPos[1] == oldStatus[i].fixPos[1]);
+    result = result && (actualStatus[i].fixPos[2] == oldStatus[i].fixPos[2]);
+  }
+  if(result == false)
+  {
+    cnet.broadcastUInt16(55555,'X','Y','Z');
+    LEDROT_ON;
+    MyTimers[TIMER_SAVE_DELAY].state = TM_START; // Speicherverzögerung läuft los
+    setOldStatus();
+  }
+}
+
+void setOldStatus()
+{
+  for(uint8_t i=0;i<NUM_ROLLLADEN;i++)
+  {
+    oldStatus[i].upTime = actualStatus[i].upTime;
+    oldStatus[i].downTime = actualStatus[i].downTime;
+    oldStatus[i].fixPos[0] = actualStatus[i].fixPos[0];
+    oldStatus[i].fixPos[1] = actualStatus[i].fixPos[1];
+    oldStatus[i].fixPos[2] = actualStatus[i].fixPos[2];
   }
 }

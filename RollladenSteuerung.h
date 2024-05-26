@@ -28,5 +28,9 @@
 #include "ledHardware.h"
 
 void stopRollladen(uint8_t rollo);
+void readEEData();
+void writeEEData();
+void compareStatus();
+void setOldStatus();
 
 #endif /* LUEFTERSTEUERUNG_H_ */

@@ -26,7 +26,8 @@ volatile TIMER2 MyTimers[MYTIMER_NUM]=
   {TM_STOP,RESTART_NO,100,0,rollTimer,5},
 #endif // NUM_ROLLLADEN
   {TM_START,RESTART_YES,actReportBetweenSensors,0,nextReportStatus,0},
-  {TM_START,RESTART_YES,30,0,led1Blinken,0}
+  {TM_START,RESTART_YES,30,0,actPositionTimer,0},
+  {TM_STOP,RESTART_NO,5000,0,nowSaveEEProm}
 };
 
 void rollTimer(uint16_t parameter)
@@ -37,7 +38,7 @@ void rollTimer(uint16_t parameter)
   moveStatus[parameter]  = 0;
 }
 
-void led1Blinken(uint16_t parameter)
+void actPositionTimer(uint16_t parameter)
 {
 	for(uint8_t i=0;i<NUM_ROLLLADEN;i++)
   {
@@ -50,7 +51,6 @@ void led1Blinken(uint16_t parameter)
 
 void nextReportStatus(uint16_t parameter)
 {
-  //LEDGRUEN_ON;
 	sendStatusReport = true;
   if(indexReport >= NUM_ROLLLADEN)
   {
@@ -63,6 +63,11 @@ void nextReportStatus(uint16_t parameter)
     statusReport = FIRSTREPORT;
     indexReport = 0;
   }
+}
+
+void nowSaveEEProm(uint16_t parameter)
+{
+  eepromWriteReady = true;
 }
 
 

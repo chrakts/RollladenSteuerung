@@ -53,7 +53,7 @@ extern volatile bool sendStatusReport;
 
 extern volatile char strStatusNachtabsenkung[5];
 extern volatile bool statusNachtabsenkung;
-
+extern uint8_t eepromWriteReady;
 class Communication;   // Forward declaration
 class ComReceiver;
 extern Serial debug;
