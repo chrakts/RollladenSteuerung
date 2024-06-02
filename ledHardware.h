@@ -1,5 +1,4 @@
-#ifndef LEDHARDWARE_H_INCLUDED
-#define LEDHARDWARE_H_INCLUDED
+#pragma once
 
 /* LED auf Basisplatine */
 #define LEDGRUEN_PORT PORTD
@@ -34,4 +33,5 @@
 #define LEDROT_TAST_TOGGLE  LEDROT_TAST_PORT.OUTTGL=LEDROT_TAST_PIN
 #endif // TASTATUR
 
-#endif // LEDHARDWARE_H_INCLUDED
+
+

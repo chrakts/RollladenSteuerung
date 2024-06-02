@@ -1,14 +1,4 @@
-/*
- * External.h
- *
- * Created: 03.04.2017 21:04:41
- *  Author: Christof
- */
-
-
-
-#ifndef EXTERNAL_H_
-#define EXTERNAL_H_
+#pragma once
 
 #include <avr/io.h>
 #include <stdbool.h>
@@ -61,4 +51,3 @@ extern Communication cnet;
 extern ComReceiver cnetRec;
 extern CRC_Calc crcGlobal;
 
-#endif /* EXTERNAL_H_ */

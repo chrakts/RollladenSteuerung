@@ -1,5 +1,4 @@
-#ifndef UARTHARDWARE_H_INCLUDED
-#define UARTHARDWARE_H_INCLUDED
+#pragma once
 
 #define JOIN_(X,Y) X##Y
 #define JOIN(X,Y) JOIN_(X,Y)
@@ -123,4 +122,3 @@ extern volatile  char UART0_ring_buffer[UART0_RING_BUFFER_SIZE];
 extern volatile uint8_t UART1_ring_received;
 extern volatile  char UART1_ring_buffer[UART1_RING_BUFFER_SIZE];
 
-#endif // UARTHARDWARE_H_INCLUDED

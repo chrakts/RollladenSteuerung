@@ -1,6 +1,4 @@
-
-#ifndef LUEFTERSTEUERUNG_H_
-#define LUEFTERSTEUERUNG_H_
+#pragma once
 
 #include <avr/io.h>
 #include <stdbool.h>
@@ -33,4 +31,3 @@ void writeEEData();
 void compareStatus();
 void setOldStatus();
 
-#endif /* LUEFTERSTEUERUNG_H_ */

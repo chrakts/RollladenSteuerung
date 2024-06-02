@@ -1,5 +1,4 @@
-#ifndef ROLLLADEN_H_INCLUDED
-#define ROLLLADEN_H_INCLUDED
+#pragma once
 
 #include <avr/io.h>
 #include <stdbool.h>
@@ -26,6 +25,3 @@ void getStatusFromPGM(uint8_t i);
 void getStatusFromEE();
 uint8_t calculateChecksum(const ROLL_STATUS& data);
 void writeStatusToEE();
-
-
-#endif // ROLLLADEN_H_INCLUDED

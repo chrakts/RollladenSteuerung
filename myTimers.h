@@ -1,13 +1,4 @@
-/*
- * MyTimer.h
- *
- * Created: 11.02.2016 20:20:03
- *  Author: Christof
- */
-
-
-#ifndef MYTIMERS_H_
-#define MYTIMERS_H_
+#pragma once
 
 #include "timer2.h"
 #include "External.h"
@@ -26,4 +17,4 @@ void nowSaveEEProm(uint16_t parameter);
 
 extern volatile TIMER2 MyTimers[MYTIMER_NUM];
 
-#endif /* MYTIMERS_H_ */
+

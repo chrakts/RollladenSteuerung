@@ -1,13 +1,4 @@
-/*
- * constants.h
- *
- * Created: 24.05.2018 19:24:50
- *  Author: chrak_2
- */
-
-
-#ifndef MYCONSTANTS_H_
-#define MYCONSTANTS_H_
+#pragma once
 
 #define BROADCAST "BR"
 
@@ -17,4 +8,3 @@
 
 enum{FIRSTREPORT, ACT_POSITION, SET_POSITION, FIXPOS_A, FIXPOS_B, FIXPOS_C, UPTIME, DOWNTIME, LASTREPORT};
 
-#endif /* MYCONSTANTS_H_ */

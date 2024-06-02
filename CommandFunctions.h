@@ -1,13 +1,4 @@
-/*
- * CommandFunctions.h
- *
- * Created: 26.04.2017 14:55:18
- *  Author: a16007
- */
-
-
-#ifndef COMMANDFUNCTIONS_H_
-#define COMMANDFUNCTIONS_H_
+#pragma once
 
 #include "RollladenSteuerung.h"
 
@@ -33,4 +24,4 @@ void jobSetUpTime(ComReceiver *comRec, char function,char address,char job, void
 void jobSetDownTime(ComReceiver *comRec, char function,char address,char job, void * pMem);
 
 
-#endif /* COMMANDFUNCTIONS_H_ */
+
