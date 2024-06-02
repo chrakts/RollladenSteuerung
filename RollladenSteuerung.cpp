@@ -23,16 +23,21 @@ void setup()
 #endif // TASTATUR
 
 #if NUM_ROLLLADEN > 0
-#pragma message "Relais vorhanden"
-  RELAISX1SETUP;
-  RELAISY1SETUP;
-  RELAISX2SETUP;
-  RELAISY2SETUP;
-  RELAISX3SETUP;
-  RELAISY3SETUP;
-  ROLLADEN_1_ST;
-  ROLLADEN_2_ST;
-  ROLLADEN_3_ST;
+#pragma message "Rollladen 1 vorhanden"
+ROLL1SETUP;
+ROLL1_OFF;
+#endif // NUM_ROLLLADEN
+
+#if NUM_ROLLLADEN > 1
+#pragma message "Rollladen 2 vorhanden"
+ROLL2SETUP;
+ROLL2_OFF;
+#endif // NUM_ROLLLADEN
+
+#if NUM_ROLLLADEN > 2
+#pragma message "Rollladen 3 vorhanden"
+ROLL3SETUP;
+ROLL3_OFF;
 #endif // NUM_ROLLLADEN
 
 
@@ -115,22 +120,55 @@ int main(void)
         }
       }
     }
-    /*
+#if NUM_ROLLLADEN>0
     switch(moveStatus[0])
     {
       case -1:
+        ROLL1_DOWN;
         LEDGRUEN_ON;
         LEDROT_OFF;
+
       break;
       case 1:
+        ROLL1_UP;
         LEDGRUEN_OFF;
         LEDROT_ON;
       break;
       default:
+        ROLL1_OFF;
         LEDGRUEN_OFF;
         LEDROT_OFF;
     }
-    */
+#endif // NUM_ROLLLADEN
+
+#if NUM_ROLLLADEN>1
+    switch(moveStatus[1])
+    {
+      case -1:
+        ROLL2_DOWN;
+      break;
+      case 1:
+        ROLL2_UP;
+      break;
+      default:
+        ROLL2_OFF;
+    }
+#endif // NUM_ROLLLADEN
+
+#if NUM_ROLLLADEN>2
+    switch(moveStatus[2])
+    {
+      case -1:
+        ROLL3_DOWN;
+      break;
+      case 1:
+        ROLL3_UP;
+      break;
+      default:
+        ROLL3_OFF;
+    }
+#endif // NUM_ROLLLADEN
+
     for(uint8_t i=0;i<NUM_ROLLLADEN;i++)
     {
       if(actPosition[i] != oldPosition[i])
