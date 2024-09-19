@@ -38,3 +38,9 @@ bin/Release/
 *.depend
 
 *.layout
+
+*.sig
+
+*.fuse1
+
+*.fuse2
