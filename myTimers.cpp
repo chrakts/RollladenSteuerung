@@ -7,6 +7,12 @@
 //10:  99.0 ms
 //101: 1000 ms
 
+//2: 16.2ms
+//10: 81ms
+//20: 162ms
+//100: 810ms
+// 12.346 tics/100ms
+
 volatile TIMER2 MyTimers[MYTIMER_NUM]=
 {
   {TM_STOP,RESTART_NO,100,0,rollTimer,0},
@@ -27,12 +33,13 @@ volatile TIMER2 MyTimers[MYTIMER_NUM]=
 #endif // NUM_ROLLLADEN
   {TM_START,RESTART_YES,actReportBetweenSensors,0,nextReportStatus,0},
   {TM_START,RESTART_YES,30,0,actPositionTimer,0},
-  {TM_STOP,RESTART_NO,5000,0,nowSaveEEProm}
+  {TM_STOP,RESTART_NO,5000,0,nowSaveEEProm,0},
+  {TM_START,RESTART_YES,10,0,ledBlinken,0}
 };
 
 void rollTimer(uint16_t parameter)
 {
-  LEDROT_OFF;
+  //LEDROT_OFF;
   LEDGRUEN_OFF;
   actPosition[parameter] = setPosition[parameter];
   moveStatus[parameter]  = 0;
@@ -42,9 +49,14 @@ void actPositionTimer(uint16_t parameter)
 {
 	for(uint8_t i=0;i<NUM_ROLLLADEN;i++)
   {
-    if(moveStatus[i] != 0)
+    switch(moveStatus[i])
     {
-      actPosition[i] = startPosition[i] + (100.0*(float)(MyTimers[i].value - MyTimers[i].actual)/(float)actualStatus[i].upTime)*float(moveStatus[i]);
+      case 1:
+        actPosition[i] = startPosition[i] + (100/TicsPer10ms*(float)(MyTimers[i].value - MyTimers[i].actual)/(float)actualStatus[i].upTime)*float(moveStatus[i]);
+      break;
+      case -1:
+        actPosition[i] = startPosition[i] + (100/TicsPer10ms*(float)(MyTimers[i].value - MyTimers[i].actual)/(float)actualStatus[i].downTime)*float(moveStatus[i]);
+      break;
     }
   }
 }
@@ -68,6 +80,11 @@ void nextReportStatus(uint16_t parameter)
 void nowSaveEEProm(uint16_t parameter)
 {
   eepromWriteReady = true;
+}
+
+void ledBlinken(uint16_t parameter)
+{
+  LEDROT_TOGGLE;
 }
 
 
