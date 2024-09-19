@@ -46,8 +46,11 @@ void jobSetToFixPos0(ComReceiver *comRec, char function,char address,char job, v
   uint8_t adr = (uint8_t)address-48;
   if(adr<NUM_ROLLLADEN)
   {
-    setPosition[adr] = actualStatus[adr].fixPos[0];
-    comRec->Getoutput()->broadcastFloat(setPosition[adr],'X',address,'a');
+    if(moveStatus[adr]==0)
+    {
+      setPosition[adr] = actualStatus[adr].fixPos[0];
+      comRec->Getoutput()->broadcastFloat(setPosition[adr],'X',address,'a');
+    }
   }
   else
     comRec->sendPureAnswer(function,address,job,false);
@@ -58,8 +61,11 @@ void jobSetToFixPos1(ComReceiver *comRec, char function,char address,char job, v
   uint8_t adr = (uint8_t)address-48;
   if(adr<NUM_ROLLLADEN)
   {
-    setPosition[adr] = actualStatus[adr].fixPos[1];
-    comRec->Getoutput()->broadcastFloat(setPosition[adr],'X',address,'a');
+    if(moveStatus[adr]==0)
+    {
+      setPosition[adr] = actualStatus[adr].fixPos[1];
+      comRec->Getoutput()->broadcastFloat(setPosition[adr],'X',address,'a');
+    }
   }
   else
     comRec->sendPureAnswer(function,address,job,false);
@@ -70,8 +76,11 @@ void jobSetToFixPos2(ComReceiver *comRec, char function,char address,char job, v
   uint8_t adr = (uint8_t)address-48;
   if(adr<NUM_ROLLLADEN)
   {
-    setPosition[adr] = actualStatus[adr].fixPos[2];
-    comRec->Getoutput()->broadcastFloat(setPosition[adr],'X',address,'a');
+    if(moveStatus[adr]==0)
+    {
+      setPosition[adr] = actualStatus[adr].fixPos[2];
+      comRec->Getoutput()->broadcastFloat(setPosition[adr],'X',address,'a');
+    }
   }
   else
     comRec->sendPureAnswer(function,address,job,false);
@@ -82,8 +91,11 @@ void jobSetToFixPosTop(ComReceiver *comRec, char function,char address,char job,
   uint8_t adr = (uint8_t)address-48;
   if(adr<NUM_ROLLLADEN)
   {
-    setPosition[adr] = 100;
-    comRec->Getoutput()->broadcastFloat(setPosition[adr],'X',address,'a');
+    if(moveStatus[adr]==0)
+    {
+      setPosition[adr] = 100;
+      comRec->Getoutput()->broadcastFloat(setPosition[adr],'X',address,'a');
+    }
   }
   else
     comRec->sendPureAnswer(function,address,job,false);
@@ -94,8 +106,11 @@ void jobSetToFixPosBottom(ComReceiver *comRec, char function,char address,char j
   uint8_t adr = (uint8_t)address-48;
   if(adr<NUM_ROLLLADEN)
   {
-    setPosition[adr] = 0;
-    comRec->Getoutput()->broadcastFloat(setPosition[adr],'X',address,'a');
+    if(moveStatus[adr]==0)
+    {
+      setPosition[adr] = 0;
+      comRec->Getoutput()->broadcastFloat(setPosition[adr],'X',address,'a');
+    }
   }
   else
     comRec->sendPureAnswer(function,address,job,false);
@@ -106,9 +121,11 @@ void jobSetPosition(ComReceiver *comRec, char function,char address,char job, vo
   uint8_t adr = (uint8_t)address-48;
   if(adr<NUM_ROLLLADEN)
   {
-    setPosition[adr] = ( (double*) pMem )[0];
-    comRec->Getoutput()->broadcastFloat(setPosition[adr],function,address,'a');
-    //writeEEData();
+    if(moveStatus[adr]==0)
+    {
+      setPosition[adr] = ( (double*) pMem )[0];
+      comRec->Getoutput()->broadcastFloat(setPosition[adr],function,address,'a');
+    }
   }
   else
     comRec->sendPureAnswer(function,address,job,false);
