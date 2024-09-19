@@ -8,7 +8,7 @@ void setup()
 {
   init_clock(SYSCLK,PLL,true,CLOCK_CALIBRATION);
 	PORTA_DIRSET = 0xff; // Relais
-	PORTA_OUTSET = 0xff;
+	PORTA_OUTSET = 0x00;
 	PORTB_DIRCLR = 0xff; // Tastatur-LEDs
 	PORTC_DIRCLR = 0xff; // Tastatur
 	PORTD_DIRSET = 0xff; // LED
@@ -67,6 +67,7 @@ ROLL3_OFF;
   PMIC_CTRL = PMIC_LOLVLEX_bm | PMIC_HILVLEN_bm | PMIC_MEDLVLEN_bm;
 	sei();
 	cnet.open(Serial::BAUD_57600,F_CPU);
+
 }
 
 int main(void)
@@ -100,20 +101,22 @@ int main(void)
           }
 
           float diff = abs(setPosition[i]-actPosition[i])/100.0;
-          if(diff > 0.99)
-            diff = 1.1;
+          if((setPosition[i]==0) || (setPosition[i]==100))
+            diff = diff+0.2;
+          //if(diff > 0.99)
+          //  diff = 1.2;
           startPosition[i] = actPosition[i];            // Startposition merken
           if(setPosition[i]>actPosition[i])
           {
             //up
-            MyTimers[i].value = (uint16_t)(diff*(float)actualStatus[i].upTime);
+            MyTimers[i].value = (uint16_t)(diff*(float)actualStatus[i].upTime*TicsPer10ms);
             moveStatus[i] = 1;
 
           }
           else
           {
             //down
-            MyTimers[i].value = (uint16_t)(diff*(float)actualStatus[i].downTime);
+            MyTimers[i].value = (uint16_t)(diff*(float)actualStatus[i].downTime*TicsPer10ms);
             moveStatus[i] = -1;
           }
           MyTimers[i].state = TM_START;
@@ -125,19 +128,14 @@ int main(void)
     {
       case -1:
         ROLL1_DOWN;
-        LEDGRUEN_ON;
-        LEDROT_OFF;
-
       break;
       case 1:
         ROLL1_UP;
-        LEDGRUEN_OFF;
-        LEDROT_ON;
       break;
       default:
         ROLL1_OFF;
         LEDGRUEN_OFF;
-        LEDROT_OFF;
+        //LEDROT_OFF;
     }
 #endif // NUM_ROLLLADEN
 
@@ -232,12 +230,18 @@ int main(void)
 
 void stopRollladen(uint8_t rollo)
 {
+uint16_t fullcycle;
+
   if(moveStatus[rollo]!=0)
   {
     MyTimers[rollo].state = TM_STOP;
     if(actPosition[rollo]>=0.0)           // nur wenn die Augangsposition bekannt war, wird die neue berechnet
     {
-      actPosition[rollo] = startPosition[rollo] + (100.0*(float)(MyTimers[rollo].value - MyTimers[rollo].actual)/(float)actualStatus[rollo].upTime) * moveStatus[rollo];
+      if(moveStatus[rollo] == 1)
+        fullcycle = actualStatus[rollo].upTime;
+      else
+        fullcycle = actualStatus[rollo].downTime;
+      actPosition[rollo] = startPosition[rollo] + (100.0/TicsPer10ms*(float)(MyTimers[rollo].value - MyTimers[rollo].actual)/(float)fullcycle) * moveStatus[rollo];
       if(actPosition[rollo] > 100.0)
         actPosition[rollo] = 100.0;
       if(actPosition[rollo] < 0.0)
@@ -274,7 +278,7 @@ void writeEEData()
     eeprom_update_byte(&saveStatus[i].fixPos[2],actualStatus[i].fixPos[2]);
   }
   eepromWriteReady = false;
-  LEDROT_OFF;
+  //LEDROT_OFF;
 }
 
 void compareStatus()
