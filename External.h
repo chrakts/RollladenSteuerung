@@ -19,11 +19,11 @@
 
 #if NUM_ROLLLADEN > 0
   #pragma message "Rollläden sind vorgesehen"
-  extern float actPosition[NUM_ROLLLADEN];
-  extern float setPosition[NUM_ROLLLADEN];
-  extern float startPosition[NUM_ROLLLADEN];
-  extern float oldPosition[NUM_ROLLLADEN];
-  extern int8_t moveStatus[NUM_ROLLLADEN];
+  extern volatile float actPosition[NUM_ROLLLADEN];
+  extern volatile float setPosition[NUM_ROLLLADEN];
+  extern volatile float startPosition[NUM_ROLLLADEN];
+  extern volatile float oldPosition[NUM_ROLLLADEN];
+  extern volatile int8_t moveStatus[NUM_ROLLLADEN];
   extern ROLL_STATUS actualStatus[NUM_ROLLLADEN];
   extern ROLL_STATUS oldStatus[NUM_ROLLLADEN];
   extern const  ROLL_STATUS backupStatus[NUM_ROLLLADEN] PROGMEM;

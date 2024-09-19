@@ -12,11 +12,11 @@ const char *Node = NODE_STRING;
 
 #if NUM_ROLLLADEN > 0
   #pragma message "Rollläden sind vorgesehen"
-  float actPosition[NUM_ROLLLADEN];      // aktuelle Position in % als float-Wert
-  float setPosition[NUM_ROLLLADEN];      // Zielposition in % als float-Wert
-  float startPosition[NUM_ROLLLADEN];    // wenn ein Rollladen startet,dann wird hier die Ausgangsposition gespeichert
-  float oldPosition[NUM_ROLLLADEN];
-  int8_t moveStatus[NUM_ROLLLADEN];
+  volatile float actPosition[NUM_ROLLLADEN];      // aktuelle Position in % als float-Wert
+  volatile float setPosition[NUM_ROLLLADEN];      // Zielposition in % als float-Wert
+  volatile float startPosition[NUM_ROLLLADEN];    // wenn ein Rollladen startet,dann wird hier die Ausgangsposition gespeichert
+  volatile float oldPosition[NUM_ROLLLADEN];
+  volatile int8_t moveStatus[NUM_ROLLLADEN];      // Hochfahren: 1; Runterfahren: -1; Stillstand: 0
   ROLL_STATUS actualStatus[NUM_ROLLLADEN];
   ROLL_STATUS oldStatus[NUM_ROLLLADEN];
   ROLL_STATUS saveStatus[NUM_ROLLLADEN] EEMEM= { {{30,50,75},1300,1000}, {{31,51,76},1900,1500}  };
