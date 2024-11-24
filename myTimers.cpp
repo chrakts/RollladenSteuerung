@@ -41,8 +41,8 @@ void rollTimer(uint16_t parameter)
 {
   //LEDROT_OFF;
   LEDGRUEN_OFF;
-  actPosition[parameter] = setPosition[parameter];
   moveStatus[parameter]  = 0;
+  actPosition[parameter] = setPosition[parameter];
 }
 
 void actPositionTimer(uint16_t parameter)
