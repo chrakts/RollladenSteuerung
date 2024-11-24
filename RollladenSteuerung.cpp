@@ -235,7 +235,7 @@ uint16_t fullcycle;
   if(moveStatus[rollo]!=0)
   {
     MyTimers[rollo].state = TM_STOP;
-    if(actPosition[rollo]>=0.0)           // nur wenn die Augangsposition bekannt war, wird die neue berechnet
+    if(startPosition[rollo]>=0)           // nur wenn die Augangsposition bekannt war, wird die neue berechnet
     {
       if(moveStatus[rollo] == 1)
         fullcycle = actualStatus[rollo].upTime;
@@ -247,8 +247,8 @@ uint16_t fullcycle;
       if(actPosition[rollo] < 0.0)
         actPosition[rollo] = 0.0;
       setPosition[rollo] = actPosition[rollo];
-      moveStatus[rollo] = 0;
     }
+    moveStatus[rollo] = 0;
     cnet.broadcastFloat(actPosition[rollo],'P','0'+rollo,'a');
     cnet.broadcastFloat(actPosition[rollo],'X','0'+rollo,'a');
   }
